@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 
@@ -10,18 +10,18 @@ const Recipe = () => {
   const [details, setDetails] = useState({});
   const [activeTab, setActiveTab] = useState("instructions");
 
-  const fetchDetails = async () => {
+  const fetchDetails = useCallback(async () => {
     const data = await fetch(
-      `https://api.spoonacular.com/recipes/${params.name}/information?apiKey=5c43875e17764800971c3e37ff653357`
+      `https://api.spoonacular.com/recipes/${params.name}/information?apiKey=1a35144fb5d9427f96c59e68b8295122`
     );
     const detailData = await data.json();
     setDetails(detailData);
     console.log(detailData);
-  };
+  }, [params.name]);
 
   useEffect(() => {
     fetchDetails();
-  }, [params.name]);
+  }, [fetchDetails]);
 
   return (
     <DetailWrapper>
@@ -48,7 +48,7 @@ const Recipe = () => {
             <h3 dangerouslySetInnerHTML={{ __html: details.instructions }}></h3>
           </div>
         )}
-        {activeTab === "ingredient" && (
+        {activeTab === "ingredients" && (
           <ul>
             {details.extendedIngredients.map((ingredient) => (
               <li key={ingredient.id}>{ingredient.original}</li>
